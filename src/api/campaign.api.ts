@@ -10,6 +10,7 @@ const URL_DELETE_CAMPAIGN = PREFIX;
 const URL_CREATE_CAMPAIGN = PREFIX;
 const URL_GET_STATISTICS = PREFIX + "/statistics";
 const URL_GET_CAMPAIGNS_BY_BRAND_ID = PREFIX + "/brand";
+
 const campaignApi = {
   getAllCampaigns: async (): Promise<any> => {
     const res = await AxiosClient.get(URL_GET_ALL);
@@ -38,6 +39,10 @@ const campaignApi = {
 
   getCampaignsByBrandId: async (brandId: string | number): Promise<ICampaign[]> => {
     const res = await AxiosClient.get(`${URL_GET_CAMPAIGNS_BY_BRAND_ID}/${brandId}`);
+    return res.data;
+  },
+  getDistinctUserIdsByCampaignIds: async (campaignIds: number[]): Promise<number[]> => {
+    const res = await AxiosClient.post("user-campaign-games/distinct-user-ids", campaignIds);
     return res.data;
   },
 };

@@ -10,6 +10,8 @@ const URL_DELETE_BRAND = PREFIX;
 const URL_CREATE_BRAND = PREFIX;
 const URL_GET_STATISTICS = PREFIX + "/statistics";
 const URL_GET_BRAND_BY_USER_ID = PREFIX + "/user";
+
+
 const brandApi = {
   getAllBrands: async (): Promise<IBrand[]> => {
     const res = await AxiosClient.get(URL_GET_ALL);

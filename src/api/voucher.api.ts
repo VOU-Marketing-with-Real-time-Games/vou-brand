@@ -7,6 +7,7 @@ const URL_GET_VOUCHER_BY_ID = PREFIX;
 const URL_UPDATE_VOUCHER = PREFIX;
 const URL_DELETE_VOUCHER = PREFIX;
 const URL_CREATE_VOUCHER = PREFIX;
+const URL_GET_DISTINCT_VOUCHER_IDS = PREFIX + "/distinct-voucher-ids";
 
 const voucherApi = {
   getAllVouchers: async (): Promise<IVoucher[]> => {
@@ -26,6 +27,10 @@ const voucherApi = {
   },
   createVoucher: async (voucherDto: IVoucherCreate): Promise<IVoucher> => {
     const res = await AxiosClient.post(URL_CREATE_VOUCHER, voucherDto);
+    return res.data;
+  },
+  getDistinctVoucherIdsByCampaignIds: async (campaignIds: number[]): Promise<string[]> => {
+    const res = await AxiosClient.post(URL_GET_DISTINCT_VOUCHER_IDS, campaignIds);
     return res.data;
   },
 };
