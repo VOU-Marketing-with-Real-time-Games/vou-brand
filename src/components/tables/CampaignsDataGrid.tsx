@@ -17,7 +17,7 @@ import CampaignDetails from "../modals-content/CampaignDetails.tsx";
 import { AuthContext } from "../../context/AuthContext.tsx";
 import { Add } from "@mui/icons-material";
 import Button from "@mui/material/Button";
-import AddAccountForm from "../modals-content/AddAccountForm.tsx";
+import CreateCampaignStepper from "../modals-content/CreateCampaignStepper.tsx";
 
 declare module "@mui/x-data-grid" {
   interface ToolbarPropsOverrides {
@@ -104,7 +104,7 @@ export default function CampaignsDataGrid() {
           },
         }}
       >
-        <AddAccountForm onSuccess={handleFormSuccess} />
+        <CreateCampaignStepper onSuccess={handleFormSuccess} />
       </Modal>
       <Modal
         tabIndex={-1}

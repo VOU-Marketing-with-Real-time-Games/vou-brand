@@ -26,7 +26,7 @@ const BranchMap: React.FC<BranchMapProps> = ({ branch }) => {
       center={[branch.latitude, branch.longitude]}
       zoom={16}
       scrollWheelZoom={false}
-      style={{ height: "300px", width: "100%" }}
+      style={{ height: "300px", width: "100%", paddingTop: "10px", paddingBottom: "10px" }}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
