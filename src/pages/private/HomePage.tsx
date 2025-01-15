@@ -5,37 +5,61 @@ import { Box } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import Typography from "@mui/material/Typography";
 import StatCard, { StatCardProps } from "../../components/cards/StatCard.tsx";
-import SessionsChart from "../../components/charts/SessionsChart.tsx";
-import userApi from "../../api/user.api";
-import campaignApi from "../../api/campaign.api";
-import brandApi from "../../api/brand.api.ts";
+import CampaignChart from "../../components/charts/CampaignChart.tsx";
+import VoucherCampaignOverview from "../../components/charts/VoucherCampaignChart.tsx";
+import VoucherChart from "../../components/charts/VoucherChart.tsx";
+import { ICampaign } from "../../types/campaign.type.ts";
+import campaignApi from "../../api/campaign.api.ts";
+import voucherApi from "../../api/voucher.api.ts";
+
+interface VoucherCampaignData {
+  name: string;
+  count: number;
+}
 
 const HomePage = () => {
-  const [userData, setUserData] = useState<StatCardProps | null>(null);
-  const [campaignData, setCampaignData] = useState<StatCardProps | null>(null);
-  const [brandData, setBrandData] = useState<StatCardProps | null>(null);
+  const [campaigns, setCampaigns] = useState<ICampaign[]>([]);
+  const [voucherIds, setVoucherIds] = useState<string[]>([]);
+  const [userIds, setUserIds] = useState<number[]>([]);
+  const [voucherCampaignData, setVoucherCampaignData] = useState<VoucherCampaignData[]>([]);
+  const brandId = 2; // Replace with actual brand ID
+  
 
   useEffect(() => {
     const fetchStatistics = async () => {
       const results = await Promise.allSettled([
-        userApi.getUserStatistics(),
-        campaignApi.getCampaignStatistics(),
-        brandApi.getBrandStatistics(),
+        campaignApi.getCampaignsByBrandId(brandId),
       ]);
+
 
       results.forEach((result, index) => {
         if (result.status === "fulfilled") {
-          if (index === 0) setUserData(result.value);
-          if (index === 1) setCampaignData(result.value);
-          if (index === 2) setBrandData(result.value);
+          if (index === 0) {
+            setCampaigns(result.value);
+          }
         } else {
           console.error(`Failed to fetch data for index ${index}`, result.reason);
         }
       });
+
+      if (results[0].status === "fulfilled") {
+        const campaignIds = results[0].value.map((campaign: ICampaign) => campaign.id);
+        const voucherResult = await voucherApi.getDistinctVoucherIdsByCampaignIds(campaignIds);
+        setVoucherIds(voucherResult);
+        const userResult = await campaignApi.getDistinctUserIdsByCampaignIds(campaignIds);
+        setUserIds(userResult);
+
+        // Create list (nameCampaign, totalVoucher)
+        const voucherCampaignData = results[0].value.map((campaign: ICampaign) => ({
+          name: campaign.name,
+          count: voucherResult.filter(voucherId => voucherId.startsWith(campaign.id.toString())).length,
+        }));
+        setVoucherCampaignData(voucherCampaignData);
+      }
     };
 
     fetchStatistics().then();
-  }, []);
+  }, [brandId]);
 
   return (
     <DocumentMeta {...metadata.homeMeta}>
@@ -44,23 +68,23 @@ const HomePage = () => {
           Overview
         </Typography>
         <Grid container spacing={2} columns={12} sx={{ mb: (theme) => theme.spacing(2) }}>
-          {userData && (
-            <Grid size={4}>
-              <StatCard {...userData} />
-            </Grid>
-          )}
-          {campaignData && (
-            <Grid size={4}>
-              <StatCard {...campaignData} />
-            </Grid>
-          )}
-          {brandData && (
-            <Grid size={4}>
-              <StatCard {...brandData} />
-            </Grid>
-          )}
+          <Grid size={4}>
+            <StatCard title="Total campaigns" interval="To now" value={campaigns.length.toString()} />
+          </Grid>
+          <Grid size={4}>
+            <StatCard title="Total vouchers" interval="To now" value={voucherIds.length.toString()} />
+          </Grid>
+          <Grid size={4}>
+            <StatCard title="Total participants" interval="To now" value={userIds.length.toString()} />
+          </Grid>
+          <Grid size={6}>
+            <CampaignChart />
+          </Grid>
+          <Grid size={6}>
+            <VoucherCampaignOverview data={voucherCampaignData}/>
+          </Grid>
           <Grid size={12}>
-            <SessionsChart />
+            <VoucherChart />
           </Grid>
         </Grid>
       </Box>

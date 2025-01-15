@@ -1,6 +1,7 @@
 import AxiosClient from "./client";
 import { IUserCreate, IFullUser } from "../types/user.type.ts";
 import { StatCardProps } from "../components/cards/StatCard.tsx";
+import { DailyCount } from "../types/dailyCount.type.ts";
 
 const PREFIX = "users";
 const URL_GET_ALL = PREFIX;
@@ -9,7 +10,7 @@ const URL_UPDATE_USER = PREFIX;
 const URL_DELETE_USER = PREFIX;
 const URL_CREATE_USER_BY_ADMIN = PREFIX + "/create";
 const URL_GET_STATISTICS = PREFIX + "/statistics";
-
+const URL_GET_DAILY_COUNTS = PREFIX + "/daily-counts";
 const userApi = {
   getAllUsers: async (): Promise<IFullUser[]> => {
     const res = await AxiosClient.get(URL_GET_ALL);
@@ -33,6 +34,10 @@ const userApi = {
   },
   getUserStatistics: async (): Promise<StatCardProps> => {
     const res = await AxiosClient.get(URL_GET_STATISTICS);
+    return res.data;
+  },
+  getUserDailyCounts: async (): Promise<DailyCount[]> => {
+    const res = await AxiosClient.get(URL_GET_DAILY_COUNTS);
     return res.data;
   },
 };
