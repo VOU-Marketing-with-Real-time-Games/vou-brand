@@ -50,6 +50,7 @@ interface AddBranchFormProps {
 const SearchField = ({ setValue }) => {
   const provider = new OpenStreetMapProvider();
 
+  // @ts-ignore
   function searchEventHandler(result) {
     const { lat, lon } = result.location.raw;
     setValue("latitude", lat);
@@ -73,7 +74,7 @@ const SearchField = ({ setValue }) => {
   });
 
   const map = useMap();
-  // @ts-ignore
+  // @ts-expect-error
   useEffect(() => {
     map.addControl(searchControl);
     map.on("geosearch/showlocation", searchEventHandler);

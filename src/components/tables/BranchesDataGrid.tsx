@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import {
   DataGrid,
   GridRowsProp,
@@ -17,12 +17,7 @@ import { Backdrop, Box, Modal } from "@mui/material";
 import Button from "@mui/material/Button";
 import { Add } from "@mui/icons-material";
 import AddBranchForm from "../modals-content/AddBranchForm.tsx";
-
-declare module "@mui/x-data-grid" {
-  interface ToolbarPropsOverrides {
-    setFilterButtonEl: React.Dispatch<React.SetStateAction<HTMLButtonElement | null>>;
-  }
-}
+import EditBranchForm from "../modals-content/EditBranchForm.tsx";
 
 export default function BranchesDataGrid() {
   const { auth } = useContext(AuthContext)!;
@@ -30,13 +25,16 @@ export default function BranchesDataGrid() {
   const [open, setOpen] = useState(false);
   const [selectedBranchId, setSelectedBranchId] = useState<string | number | null>(null);
   const [openForm, setOpenForm] = useState(false);
+
   const handleOpen = (id: string | number) => {
     setSelectedBranchId(id);
     setOpen(true);
   };
+
   const handleClose = () => setOpen(false);
   const handleOpenForm = () => setOpenForm(true);
   const handleCloseForm = () => setOpenForm(false);
+
   const transformedRows = (branches: IBranch[]): GridRowsProp => {
     return branches.map((branch) => ({
       id: branch.id,
@@ -69,11 +67,19 @@ export default function BranchesDataGrid() {
       </GridToolbarContainer>
     );
   }
-  const columns = [...initialColumns, getActionColumn({ handleOpen })];
+
+  const columns = [
+    ...initialColumns,
+    getActionColumn({
+      handleOpen: (id: string | number) => handleOpen(id),
+    }),
+  ];
+
   const handleFormSuccess = () => {
     setOpenForm(false);
     refetch().then();
   };
+
   return (
     <>
       <Modal
@@ -106,7 +112,11 @@ export default function BranchesDataGrid() {
           },
         }}
       >
-        {selectedBranchId === null ? <div></div> : <div></div>}
+        {selectedBranchId === null ? (
+          <div></div>
+        ) : (
+          <EditBranchForm branchId={selectedBranchId} onSuccess={handleFormSuccess} />
+        )}
       </Modal>
       <DataGrid
         rows={rows}

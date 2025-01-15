@@ -14,11 +14,11 @@ const branchApi = {
     const res = await AxiosClient.get(URL_GET_ALL);
     return res.data;
   },
-  getBranchById: async (id: number): Promise<IBranch> => {
+  getBranchById: async (id: string | number): Promise<IBranch> => {
     const res = await AxiosClient.get(`${URL_GET_BRANCH_BY_ID}/${id}`);
     return res.data;
   },
-  updateBranch: async (id: number, branchDto: IBranchRequestDto): Promise<IBranch> => {
+  updateBranch: async (id: string | number, branchDto: IBranchRequestDto): Promise<IBranch> => {
     const res = await AxiosClient.put(`${URL_UPDATE_BRANCH}/${id}`, branchDto);
     return res.data;
   },
