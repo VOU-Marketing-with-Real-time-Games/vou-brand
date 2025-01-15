@@ -1,0 +1,2709 @@
+openapi: 3.0.3
+info:
+  title: VOU System API
+  description: API Documentation for the VOU System complying with RESTful principles.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/v1
+tags:
+  - name: User
+    description: Endpoints for managing users and their activities
+  - name: Brand
+    description: Endpoints for managing brands and branches
+  - name: Campaign
+    description: Endpoints for managing campaigns
+  - name: Voucher
+    description: Endpoints for managing vouchers
+  - name: Notification
+    description: Endpoints for managing notifications
+  - name: GameInfo
+    description: Endpoints for managing games, quizzes, and puzzles
+  - name: GameCampaign
+    description: Endpoints for managing game campaigns
+  - name: UserCampaignGame
+    description: Endpoints for managing user campaign games
+  - name: Puzzle
+    description: Endpoints for managing puzzles
+  - name: UserItem
+    description: Endpoints for managing user items
+  - name: Quizz
+    description: Endpoints for managing quizzes
+  - name: Question
+    description: Endpoints for managing questions
+  - name: UserAnswer
+    description: Endpoints for managing user answers
+  - name: Gift
+    description: Endpoints for create gift link and redeem gift link
+  - name: Image
+    description: Operations related to image management
+
+paths:
+  /users:
+    post:
+      tags:
+        - User
+      summary: Create a new user (register)
+      description: Add a new user to the system.
+      requestBody:
+        description: User details
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fullname:
+                  type: string
+                  example: Le Minh Hoang
+                username:
+                  type: string
+                  example: johndoe
+                email:
+                  type: string
+                  format: email
+                  example: johndoe@example.com
+                password:
+                  type: string
+                  format: password
+                  example: securePassword123
+                role:
+                  type: string
+                  example: ADMIN
+                phoneNum:
+                  type: string
+                  example: 0123456789 
+                dob:
+                  type: string
+                  format: date
+                  example: 2003-03-01
+                gender :
+                  type: string
+                  example: MALE
+                
+              required:
+                - username
+                - email
+                - password
+                - fullname
+                - phoneNum
+      responses:
+        201:
+          description: User created successfully
+        400:
+          description: Validation error or Email, Username is existed
+
+    get:
+      tags:
+        - User
+      summary: Retrieve all users
+      description: Get a list of all registered users.
+      responses:
+        200:
+          description: List of users retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: UUID format
+                    fullname:
+                     type: string
+                     example: Le Minh Hoang
+                    avatar:
+                     type: string
+                     example: example avatar link
+                    status:
+                     type: string
+                     example: ENABLE
+                    username:
+                     type: string
+                     example: johndoe
+                    email:
+                     type: string
+                     format: email
+                     example: johndoe@example.com
+                    role:
+                     type: string
+                     example: ADMIN
+                    createdAt:
+                     type: string
+                     example: datetime data                     
+                    phoneNum:
+                     type: string
+                     example: 0123456789 
+      
+  /users/{userId}:
+    get:
+      tags:
+        - User
+      summary: Retrieve a specific user
+      description: Get details of a user by their unique ID.
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: UUID format
+      responses:
+        200:
+          description: User details retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                    id:
+                      type: string
+                      example: UUID format
+                    fullname:
+                     type: string
+                     example: Le Minh Hoang
+                    avatar:
+                     type: string
+                     example: example avatar link
+                    status:
+                     type: string
+                     example: ENABLE
+                    username:
+                     type: string
+                     example: johndoe
+                    email:
+                     type: string
+                     format: email
+                     example: johndoe@example.com
+                    role:
+                     type: string
+                     example: ADMIN
+                    createdAt:
+                     type: string
+                     example: datetime data                     
+                    phoneNum:
+                     type: string
+                     example: 0123456789 
+        404:
+          description: User not found
+
+
+    put:
+      tags:
+        - User
+      summary: Update user details
+      description: Modify the details of an existing user.
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: UUID format
+      requestBody:
+        description: Updated user details
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                    fullname:
+                     type: string
+                     example: Le Minh Hoang
+                    avatar:
+                     type: object
+                     example: 
+                    username:
+                     type: string
+                     example: johndoe
+                    email:
+                     type: string
+                     format: email
+                     example: johndoe@example.com
+                    role:
+                     type: string
+                     example: ADMIN
+                    phoneNum:
+                     type: string
+                     example: 0123456789 
+      responses:
+        200:
+          description: User updated successfully
+        404:
+          description: User not found
+        400:
+          description: Validation error or Email, Username is existed
+
+  /brands:
+    post:
+      tags:
+        - Brand
+      summary: Create a new brand
+      description: Add a new brand to the system.
+      requestBody:
+        description: Brand details
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: BrandName
+                field:
+                  type: string
+                  example: Retail
+              required:
+                - name
+                - field
+    
+      responses:
+        201:
+          description: Brand created successfully
+        400:
+          description: Validation error
+
+    get:
+      tags:
+        - Brand
+      summary: Retrieve all brands
+      description: Get a list of all brands.
+      responses:
+        200:
+          description: List of brands retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                   id:
+                    type: number
+                    example: 1
+                   name:
+                    type: string
+                    example: ABC BrandName
+                   field:
+                    type: string
+                    example: Retail
+                   status:
+                    type: string
+                    example: ENABLE
+                   enabled:
+                    type: boolean
+                    example: true
+                   creator:
+                    type: string
+                    example: userId
+                   createdAt:
+                     type: string
+                     format: date
+                     example: 2024-03-01
+
+  /brands/{brandId}:
+    get:
+      tags:
+        - Brand
+      summary: Retrieve a specific brand
+      description: Get details of a brand by its unique ID.
+      parameters:
+        - name: brandId
+          in: path
+          required: true
+          schema:
+            type: number
+            example: 1
+      responses:
+        200:
+          description: Brand details retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: number
+                    example: 1
+                  name:
+                    type: string
+                    example: ABC BrandName
+                  field:
+                    type: string
+                    example: Retail
+                  status:
+                    type: string
+                    example: Retail
+                  enabled:
+                    type: boolean
+                    example: true
+                  creator:
+                    type: string
+                    example: userId
+                  createdAt:
+                    type: string
+                    format: date
+                    example: 2024-03-01
+                
+        404:
+          description: Brand not found
+
+    put:
+      tags:
+        - Brand
+      summary: Update brand details
+      description: Modify the details of an existing brand.
+      parameters:
+        - name: brandId
+          in: path
+          required: true
+          schema:
+            type: number
+            example: 1
+      requestBody:
+        description: Updated brand details
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: UpdatedBrandName
+                field:
+                  type: string
+                  example: UpdatedField
+                status:
+                  type: string
+                  example: REFUSE your brand is illegal
+              required:
+                - name
+                - field
+                - status
+      responses:
+        200:
+          description: Brand updated successfully
+        404:
+          description: Brand not found
+
+    delete:
+      tags:
+        - Brand
+      summary: Delete a brand
+      description: Remove a brand from the system by its unique ID.
+      parameters:
+        - name: brandId
+          in: path
+          required: true
+          schema:
+            type: number
+            example: 1
+      responses:
+        204:
+          description: Brand deleted successfully
+        404:
+          description: Brand not found
+
+  /branches:
+    post:
+      tags:
+        - Brand
+      summary: Create a new branch
+      description: Add a new branch under a brand.
+      requestBody:
+        description: Branch details
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                brandId:
+                  type: number
+                  example: 1
+                name:
+                  type: string
+                  example: BranchName
+                address:
+                  type: string
+                  example: 123 Main St, City
+                long:
+                  type : number
+                  example: 1.2
+                lat:
+                  type : number
+                  example: 1.2
+              required:
+                - brandId
+                - name
+                - address
+                - long
+                - lat
+      responses:
+        201:
+          description: Branch created successfully
+        400:
+          description: Validation error
+        404:
+          description: Brand not found
+
+    get:
+      tags:
+        - Brand
+      summary: Retrieve all branches
+      description: Get a list of all branches.
+      responses:
+        200:
+          description: List of branches retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: number
+                      example: 1
+                    brandId:
+                      type: number
+                      example: 1  
+                    name:
+                      type: string
+                      example: Branch ABC 
+                    address:
+                      type: string
+                      example: 123 Main St, City
+                    status:
+                      type: string
+                      example: OPENING
+                    long:
+                      type: number
+                      example: 1.2
+                    lat:
+                      type: number
+                      example: 1.2
+  /branches/{branchId}:
+    get:
+      tags:
+        - Brand
+      summary: Retrieve a specific branch
+      description: Get details of a branch by its unique ID.
+      parameters:
+        - name: branchId
+          in: path
+          required: true
+          schema:
+            type: number
+            example: 1
+      responses:
+        200:
+          description: Branch details retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                    id:
+                      type: number
+                      example: 1
+                    brandId:
+                      type: number
+                      example: 1  
+                    name:
+                      type: string
+                      example: Branch ABC 
+                    address:
+                      type: string
+                      example: 123 Main St, City
+                    status:
+                      type: string
+                      example: OPENING
+                    enable:
+                      type: boolean
+                      example: true
+                    long:
+                      type: number
+                      example: 1.2
+                    lat:
+                      type: number
+                      example: 1.2
+        404:
+          description: Branch not found
+
+    put:
+      tags:
+        - Brand
+      summary: Update branch details
+      description: Modify the details of an existing branch.
+      parameters:
+        - name: branchId
+          in: path
+          required: true
+          schema:
+            type: number
+            example: 1
+      requestBody:
+        description: Updated branch details
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: UpdatedBranchName
+                address:
+                  type: string
+                  example: Updated address
+                long:
+                  type: number
+                  example: 1.2
+                lat:
+                  type: number
+                  example: 1.2
+                enable:
+                  type: boolean
+                  example: true
+                status:
+                  type: string
+                  example: CLOSED
+              required:
+                - name
+                - location
+                - status
+      responses:
+        200:
+          description: Branch updated successfully
+        404:
+          description: Branch not found
+
+    delete:
+      tags:
+        - Brand
+      summary: Delete a branch
+      description: Remove a branch from the system by its unique ID.
+      parameters:
+        - name: branchId
+          in: path
+          required: true
+          schema:
+            type: number
+            example: 1
+      responses:
+        204:
+          description: Branch deleted successfully
+        404:
+          description: Branch not found
+          
+  /campaigns:
+    post:
+      tags:
+        - Campaign
+      summary: Create a new campaign
+      description: Add a new campaign to the system.
+      requestBody:
+        description: Campaign details
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Spring Sale 
+                image:
+                  type: object
+                  example:
+                field:
+                  type: string
+                  example: Fashion
+                startDate:
+                  type: string
+                  format: date
+                  example: 2024-03-01
+                endDate:
+                  type: string
+                  format: date
+                  example: 2024-03-31
+                brandId:
+                  type: number
+                  example: 1
+              required:
+                - name
+                - field
+                - startDate
+                - endDate
+                - brandId
+                
+      responses:
+        201:
+          description: Campaign created successfully
+        400:
+          description: Validation error
+
+    get:
+      tags:
+        - Campaign
+      summary: Retrieve all campaigns
+      description: Get a list of all campaigns.
+      responses:
+        200:
+          description: List of campaigns retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: number
+                      example: 1
+                    name:
+                      type: string
+                      example: Spring Sale 2024
+                    image:
+                      type: string
+                      example: https://...
+                    startDate:
+                     type: string
+                     format: date
+                     example: 2024-03-01
+                    endDate:
+                     type: string
+                     format: date
+                     example: 2024-03-31
+                    status:
+                      type: string
+                      example: PENDING
+                    createdAt:
+                     type: string
+                     format: date
+                     example: 2024-03-01
+                    brandId:
+                     type: number
+                     example: 1
+                    
+    
+  /campaigns/{campaignId}:
+    get:
+      tags:
+        - Campaign
+      summary: Retrieve a specific campaign
+      description: Get details of a campaign by its unique ID.
+      parameters:
+        - name: campaignId
+          in: path
+          required: true
+          schema:
+            type: number
+            example: 1
+      responses:
+        200:
+          description: Campaign details retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                    id:
+                      type: string
+                      example: campaign123
+                    name:
+                      type: string
+                      example: Spring Sale 2024
+                    image:
+                      type: string
+                      example: https://...
+                    field:
+                      type: string
+                      example: fashion
+                    startDate:
+                     type: string
+                     format: date
+                     example: 2024-03-01
+                    endDate:
+                     type: string
+                     format: date
+                     example: 2024-03-31
+                    status:
+                      type: string
+                      example: PENDING
+                    createdAt:
+                     type: string
+                     format: date
+                     example: 2024-03-01
+                    brandId:
+                     type: number
+                     example: 1
+        404:
+          description: Campaign not found
+
+    put:
+      tags:
+        - Campaign
+      summary: Update campaign details
+      description: Modify the details of an existing campaign.
+      parameters:
+        - name: campaignId
+          in: path
+          required: true
+          schema:
+            type: number
+            example: 1
+      requestBody:
+        description: Updated campaign details
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                    name:
+                      type: string
+                      example: Spring Sale 2024
+                    image:
+                      type: object
+                      example: 
+                    field:
+                      type: string
+                      example: food
+                    startDate:
+                     type: string
+                     format: date
+                     example: 2024-03-01
+                    endDate:
+                     type: string
+                     format: date
+                     example: 2024-03-31
+                    status:
+                      type: string
+                      example: APROVED
+                    brandId:
+                     type: number
+                     example: 1
+      responses:
+        200:
+          description: Campaign updated successfully
+        404:
+          description: Campaign not found
+        400:
+          description: Validation Error
+
+    delete:
+      tags:
+        - Campaign
+      summary: Delete a campaign
+      description: Remove a campaign from the system by its unique ID.
+      parameters:
+        - name: campaignId
+          in: path
+          required: true
+          schema:
+            type: number
+            example: 1
+      responses:
+        204:
+          description: Campaign deleted successfully
+        404:
+          description: Campaign not found
+  /campaigns/user/{userId}:
+    get:
+      tags:
+        - Campaign
+      summary: Retrieve all campaigns which user participated
+      description: Get a list of all campaigns by user ID
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: number
+            example: 1
+      responses:
+        200:
+          description: List of campaigns retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: number
+                      example: 1
+                    name:
+                      type: string
+                      example: Spring Sale 2024
+                    image:
+                      type: string
+                      example: https://....
+                    startDate:
+                     type: string
+                     format: date
+                     example: 2024-03-01
+                    endDate:
+                     type: string
+                     format: date
+                     example: 2024-03-31
+                    status:
+                      type: string
+                      example: HAPPENING
+                    createdAt:
+                     type: string
+                     format: date
+                     example: 2024-03-01
+                    brandId:
+                     type: number
+                     example: 1
+  /campaigns/user-favourite/{userId}:
+    get:
+      tags:
+        - Campaign
+      summary: Retrieve all campaigns which user added to list favourite
+      description: Get a list of all favourite campaigns by user ID
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: number
+            example: 1
+      responses:
+        200:
+          description: List of campaigns retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: number
+                      example: 1
+                    name:
+                      type: string
+                      example: Spring Sale 2024
+                    image:
+                      type: string
+                      example: https://....
+                    startDate:
+                     type: string
+                     format: date
+                     example: 2024-03-01
+                    endDate:
+                     type: string
+                     format: date
+                     example: 2024-03-31
+                    status:
+                      type: string
+                      example: HAPPENING
+                    createdAt:
+                     type: string
+                     format: date
+                     example: 2024-03-01
+                    brandId:
+                     type: number
+                     example: 1
+  /vouchers:
+    post:
+      tags:
+        - Voucher
+      summary: Create a new voucher
+      description: Add a new voucher to the system.
+      requestBody:
+        description: Voucher details
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: string
+                  example: SPRING2024
+                image:
+                  type: object
+                  example: 
+                description:
+                  type: string
+                  example: ......
+                discount:
+                  type: number
+                  format: float
+                  example: 15.0
+                expirationDate:
+                  type: string
+                  format: date-time
+                  example: 2024-03-31T23:59:59Z
+                brandId:
+                  type: number
+                  example: 1
+              required:
+                - code
+                - discount
+                - image
+                - expirationDate
+                - brandId
+      responses:
+        201:
+          description: Voucher created successfully
+        400:
+          description: Validation error
+
+    get:
+      tags:
+        - Voucher
+      summary: Retrieve all vouchers
+      description: Get a list of all vouchers.
+      responses:
+        200:
+          description: List of vouchers retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    code:
+                     type: string
+                     example: SPRING2024
+                    qrCode:
+                     type: string
+                     example: https://....
+                    image:
+                     type: string
+                     example: https://....
+                    description:
+                     type: string
+                     example: ......
+                    discount:
+                     type: number
+                     format: float
+                     example: 15.0
+                    expirationDate:
+                     type: string
+                     format: date-time
+                     example: 2024-03-31T23:59:59Z
+                    createdDate:
+                     type: string
+                     format: date-time
+                     example: 2024-03-20T23:59:59Z
+                    brandId:
+                     type: number
+                     example: 1
+
+  /vouchers/{voucherId}:
+    get:
+      tags:
+        - Voucher
+      summary: Retrieve a specific voucher
+      description: Get details of a voucher by its unique ID.
+      parameters:
+        - name: voucherId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: SPRING2024
+      responses:
+        200:
+          description: Voucher details retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                    code:
+                     type: string
+                     example: SPRING2024
+                    qrCode:
+                     type: string
+                     example: https://....
+                    image:
+                     type: string
+                     example: https://....
+                    description:
+                     type: string
+                     example: ......
+                    discount:
+                     type: number
+                     format: float
+                     example: 15.0
+                    expirationDate:
+                     type: string
+                     format: date-time
+                     example: 2024-03-31T23:59:59Z
+                    createdDate:
+                     type: string
+                     format: date-time
+                     example: 2024-03-20T23:59:59Z
+                    brandId:
+                     type: number
+                     example: 1
+        404:
+          description: Voucher not found
+
+    put:
+      tags:
+        - Voucher
+      summary: Update voucher details
+      description: Modify the details of an existing voucher.
+      parameters:
+        - name: voucherId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: SPRING2024
+      requestBody:
+        description: Updated voucher details
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: object
+                  example: 
+                discount:
+                  type: number
+                  format: float
+                  example: 20.0
+                description:
+                     type: string
+                     example: ......
+                expirationDate:
+                  type: string
+                  format: date-time
+                  example: 2024-04-30T23:59:59Z
+                status:
+                  type: string
+                  enum: [ACTIVE, EXPIRED, REDEEMED]
+                  example: ACTIVE
+              required:
+                - code
+                - discount
+                - expirationDate
+                - status
+      responses:
+        200:
+          description: Voucher updated successfully
+        404:
+          description: Voucher not found
+
+    delete:
+      tags:
+        - Voucher
+      summary: Delete a voucher
+      description: Remove a voucher from the system by its unique ID.
+      parameters:
+        - name: voucherId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: SPRING2024
+      responses:
+        204:
+          description: Voucher deleted successfully
+        404:
+          description: Voucher not found
+          
+  /vouchers/user/{userId}:
+    get:
+      tags:
+        - Voucher
+      summary: List vouchers for a specific user
+      description: Retrieve all vouchers assigned to a user by their unique ID.
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: UUID format
+      responses:
+        200:
+          description: List of vouchers retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    code:
+                     type: string
+                     example: SPRING2024
+                    qrCode:
+                     type: string
+                     example: https://....
+                    image:
+                     type: string
+                     example: https://....
+                    description:
+                     type: string
+                     example: ......
+                    discount:
+                     type: number
+                     format: float
+                     example: 15.0
+                    expirationDate:
+                     type: string
+                     format: date-time
+                     example: 2024-03-31T23:59:59Z
+                    createdDate:
+                     type: string
+                     format: date-time
+                     example: 2024-03-20T23:59:59Z
+                    brandId:
+                     type: number
+                     example: 1
+        404:
+          description: User not found 
+  
+  /vouchers/campaign/{campaignId}:
+    get:
+      tags:
+        - Voucher
+      summary: List vouchers for a specific campaign
+      description: Retrieve all vouchers created for a specific campaign.
+      parameters:
+        - name: campaignId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: campaign123
+      responses:
+        200:
+          description: List of vouchers retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    code:
+                     type: string
+                     example: SPRING2024
+                    qrCode:
+                     type: string
+                     example: https://....
+                    image:
+                     type: string
+                     example: https://....
+                    description:
+                     type: string
+                     example: ......
+                    discount:
+                     type: number
+                     format: float
+                     example: 15.0
+                    expirationDate:
+                     type: string
+                     format: date-time
+                     example: 2024-03-31T23:59:59Z
+                    createdDate:
+                     type: string
+                     format: date-time
+                     example: 2024-03-20T23:59:59Z
+                    brandId:
+                     type: number
+                     example: 1
+        404:
+          description: Campaign not found
+          
+  /notifications:
+    post:
+      tags:
+        - Notification
+      summary: Add a new notification
+      description: Create a new notification in the system.
+      requestBody:
+        description: Notification details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationDto'
+      responses:
+        201:
+          description: Notification created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationDto'
+        400:
+          description: Validation error
+
+  /notifications/{id}:
+    delete:
+      tags:
+        - Notification
+      summary: Soft delete a notification
+      description: Soft delete a notification by setting its isDeleted flag to true.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        204:
+          description: Notification deleted successfully
+        404:
+          description: Notification not found
+
+  /notifications/user/{userId}:
+    get:
+      tags:
+        - Notification
+      summary: Retrieve notifications for a specific user
+      description: Get a list of notifications assigned to a user by their unique ID.
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        200:
+          description: Notifications retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NotificationDto'
+        404:
+          description: User not found
+  /games:
+    get:
+      tags:
+        - GameInfo
+      summary: Retrieve all games
+      description: Get a list of all available games.
+      responses:
+        200:
+          description: List of games retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: number
+                      example: 1
+                    name:
+                      type: string
+                      example: Quizz
+                    type:
+                      type: string
+                      example: QUIZZ
+                    image:
+                      type: string
+                      example: https://....
+                    enable:
+                      type: boolean
+                      example: true
+  /game-info:
+    get:
+      tags:
+        - GameInfo
+      summary: Retrieve all games
+      description: Get a list of all available games.
+      responses:
+        200:
+          description: List of games retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GameInfoDto'
+
+  /game-info/{id}:
+    get:
+      tags:
+        - GameInfo
+      summary: Retrieve game information by ID
+      description: Get details of a game by its unique ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        200:
+          description: Game details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameInfoDto'
+        404:
+          description: Game not found
+
+    put:
+      tags:
+        - GameInfo
+      summary: Update game information
+      description: Modify the details of an existing game.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        description: Updated game details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GameInfoRequestDto'
+      responses:
+        200:
+          description: Game updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameInfoDto'
+        404:
+          description: Game not found
+        400:
+          description: Validation error
+  /game-campaigns:
+    get:
+      tags:
+        - GameCampaign
+      summary: Retrieve all game campaigns
+      description: Get a list of all game campaigns.
+      responses:
+        200:
+          description: List of game campaigns retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GameCampaignResponseDto'
+
+    post:
+      tags:
+        - GameCampaign
+      summary: Create a new game campaign
+      description: Add a new game campaign to the system.
+      requestBody:
+        description: Game campaign details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GameCampaignRequestDto'
+      responses:
+        201:
+          description: Game campaign created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameCampaignResponseDto'
+        400:
+          description: Validation error
+        404:
+          description: Game not found
+
+  /game-campaigns/{id}:
+    get:
+      tags:
+        - GameCampaign
+      summary: Retrieve a game campaign by ID
+      description: Get details of a game campaign by its unique ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        200:
+          description: Game campaign details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameCampaignResponseDto'
+        404:
+          description: Game campaign not found
+
+    put:
+      tags:
+        - GameCampaign
+      summary: Update game campaign details
+      description: Modify the details of an existing game campaign.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        description: Updated game campaign details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GameCampaignRequestDto'
+      responses:
+        200:
+          description: Game campaign updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameCampaignResponseDto'
+        404:
+          description: Game campaign not found
+        400:
+          description: Validation error
+
+    delete:
+      tags:
+        - GameCampaign
+      summary: Delete a game campaign
+      description: Remove a game campaign from the system by its unique ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        204:
+          description: Game campaign deleted successfully
+        404:
+          description: Game campaign not found
+
+  /game-campaigns/campaign/{campaignId}:
+    get:
+      tags:
+        - GameCampaign
+      summary: Retrieve game campaigns by campaign ID
+      description: Get a list of game campaigns by campaign ID.
+      parameters:
+        - name: campaignId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        200:
+          description: List of game campaigns retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GameCampaignResponseDto'
+
+  /game-campaigns/{campaignId}/users:
+    get:
+      tags:
+        - GameCampaign
+      summary: Retrieve user campaign games by campaign ID
+      description: Get a list of user campaign games by campaign ID.
+      parameters:
+        - name: campaignId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        200:
+          description: List of user campaign games retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserCampaignGameResponseDto'
+        404:
+          description: Game campaign not found
+
+  /game-campaigns/game/{gameId}/campaigns:
+    get:
+      tags:
+        - GameCampaign
+      summary: Retrieve campaign IDs by game ID
+      description: Get a list of campaign IDs by game ID.
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        200:
+          description: List of campaign IDs retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: integer
+                  example: 1
+        404:
+          description: Game not found
+
+  /user-campaign-games:
+    post:
+      tags:
+        - UserCampaignGame
+      summary: Create a new user campaign game
+      description: Add a new user campaign game to the system.
+      requestBody:
+        description: User campaign game details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCampaignGameRequestDto'
+      responses:
+        201:
+          description: User campaign game created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCampaignGameResponseDto'
+        400:
+          description: Validation error
+        404:
+          description: Game campaign not found
+
+    get:
+      tags:
+        - UserCampaignGame
+      summary: Retrieve all user campaign games
+      description: Get a list of all user campaign games.
+      responses:
+        200:
+          description: List of user campaign games retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserCampaignGameResponseDto'
+
+  /user-campaign-games/{id}:
+    get:
+      tags:
+        - UserCampaignGame
+      summary: Retrieve a user campaign game by ID
+      description: Get details of a user campaign game by its unique ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        200:
+          description: User campaign game details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCampaignGameResponseDto'
+        404:
+          description: User campaign game not found
+
+  /user-campaign-games/{id}/completed:
+    get:
+      tags:
+        - UserCampaignGame
+      summary: Update user campaign game to completed
+      description: Mark a user campaign game as completed.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        200:
+          description: User campaign game updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCampaignGameResponseDto'
+        404:
+          description: User campaign game not found
+
+  /user-campaign-games/user/{userId}:
+    get:
+      tags:
+        - UserCampaignGame
+      summary: Retrieve user campaign games by user ID
+      description: Get a list of user campaign games by user ID.
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        200:
+          description: List of user campaign games retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserCampaignGameResponseDto'
+
+  /user-campaign-games/campaign/{campaignId}/users:
+    get:
+      tags:
+        - UserCampaignGame
+      summary: Retrieve distinct users by campaign ID
+      description: Get a list of distinct users by campaign ID.
+      parameters:
+        - name: campaignId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        200:
+          description: List of distinct users retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: integer
+                  example: 1
+        404:
+          description: Campaign not found
+
+  /user-campaign-games/campaign/users:
+    get:
+      tags:
+        - UserCampaignGame
+      summary: Retrieve distinct users by all campaigns
+      description: Get a list of distinct users by all campaigns.
+      responses:
+        200:
+          description: List of distinct users retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: integer
+                  example: 1
+  /puzzles:
+    post:
+      tags:
+        - Puzzle
+      summary: Create a new puzzle
+      description: Add a new puzzle to the system.
+      requestBody:
+        description: Puzzle details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PuzzleRequestDto'
+      responses:
+        201:
+          description: Puzzle created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PuzzleResponseDto'
+        400:
+          description: Validation error
+
+    get:
+      tags:
+        - Puzzle
+      summary: Retrieve all puzzles
+      description: Get a list of all puzzles.
+      responses:
+        200:
+          description: List of puzzles retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PuzzleResponseDto'
+
+  /puzzles/{id}:
+    get:
+      tags:
+        - Puzzle
+      summary: Retrieve a specific puzzle
+      description: Get details of a puzzle by its unique ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        200:
+          description: Puzzle details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PuzzleResponseDto'
+        404:
+          description: Puzzle not found
+
+    put:
+      tags:
+        - Puzzle
+      summary: Update puzzle details
+      description: Modify the details of an existing puzzle.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        description: Updated puzzle details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PuzzleRequestDto'
+      responses:
+        200:
+          description: Puzzle updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PuzzleResponseDto'
+        404:
+          description: Puzzle not found
+        400:
+          description: Validation error
+
+    delete:
+      tags:
+        - Puzzle
+      summary: Delete a puzzle
+      description: Remove a puzzle from the system by its unique ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        204:
+          description: Puzzle deleted successfully
+        404:
+          description: Puzzle not found
+
+  /user-items/add-random-item/user/{userId}/puzzle/{puzzleId}:
+    get:
+      tags:
+        - UserItem
+      summary: Add a random item to a user
+      description: Add a random item to a user for a specific puzzle.
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - name: puzzleId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        200:
+          description: Item added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemResponseDto'
+        204:
+          description: No content
+
+  /user-items/user/{userId}/puzzle/{puzzleId}:
+    get:
+      tags:
+        - UserItem
+      summary: Retrieve user items by user ID and puzzle ID
+      description: Get a list of user items by user ID and puzzle ID.
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - name: puzzleId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        200:
+          description: List of user items retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserItemDto'
+        204:
+          description: No content
+
+  /user-items/user/{userId}:
+    get:
+      tags:
+        - UserItem
+      summary: Retrieve user items by user ID
+      description: Get a list of user items by user ID.
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        200:
+          description: List of user items retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserItemDto'
+        204:
+          description: No content
+  /quizzes:
+    get:
+      tags:
+        - Quizz
+      summary: Retrieve all quizzes
+      description: Get a list of all quizzes.
+      responses:
+        200:
+          description: List of quizzes retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/QuizzResponseDto'
+    post:
+      tags:
+        - Quizz
+      summary: Create a new quiz
+      description: Add a new quiz to the system.
+      requestBody:
+        description: Quiz details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuizzRequestDto'
+      responses:
+        201:
+          description: Quiz created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuizzResponseDto'
+        400:
+          description: Validation error
+
+  /quizzes/{id}:
+    get:
+      tags:
+        - Quizz
+      summary: Retrieve a specific quiz
+      description: Get details of a quiz by its unique ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        200:
+          description: Quiz details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuizzResponseDto'
+        404:
+          description: Quiz not found
+    put:
+      tags:
+        - Quizz
+      summary: Update quiz details
+      description: Modify the details of an existing quiz.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        description: Updated quiz details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuizzRequestDto'
+      responses:
+        200:
+          description: Quiz updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuizzResponseDto'
+        404:
+          description: Quiz not found
+        400:
+          description: Validation error
+    delete:
+      tags:
+        - Quizz
+      summary: Delete a quiz
+      description: Remove a quiz from the system by its unique ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        204:
+          description: Quiz deleted successfully
+        404:
+          description: Quiz not found
+  /questions:
+    get:
+      tags:
+        - Question
+      summary: Retrieve all questions
+      description: Get a list of all questions.
+      responses:
+        200:
+          description: List of questions retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/QuestionResponseDto'
+
+    post:
+      tags:
+        - Question
+      summary: Create a new question
+      description: Add a new question to the system.
+      requestBody:
+        description: Question details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuestionRequestDto'
+      responses:
+        201:
+          description: Question created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionResponseDto'
+        400:
+          description: Validation error
+
+  /questions/{id}:
+    get:
+      tags:
+        - Question
+      summary: Retrieve a specific question
+      description: Get details of a question by its unique ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Question details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionResponseDto'
+        404:
+          description: Question not found
+
+    put:
+      tags:
+        - Question
+      summary: Update question details
+      description: Modify the details of an existing question.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Updated question details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuestionRequestDto'
+      responses:
+        200:
+          description: Question updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionResponseDto'
+        404:
+          description: Question not found
+        400:
+          description: Validation error
+
+    delete:
+      tags:
+        - Question
+      summary: Delete a question
+      description: Remove a question from the system by its unique ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: Question deleted successfully
+        404:
+          description: Question not found
+
+  /user-answers:
+    post:
+      tags:
+        - UserAnswer
+      summary: Save a user answer
+      description: Save a user's answer to a question.
+      requestBody:
+        description: User answer details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserAnswerRequestDto'
+      responses:
+        201:
+          description: User answer saved successfully
+        400:
+          description: Validation error
+  /gift/create:
+    post:
+      tags:
+        - Gift
+      summary: Create Gift Token
+      description: Creates a new gift token based on the provided request.
+      requestBody:
+        description: Gift link creation request
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GiftLinkRequest'
+      responses:
+        '200':
+          description: Gift token created successfully
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "abcdef123456"
+        '400':
+          description: Invalid input
+  /gift/redeem:
+    post:
+      tags:
+        - Gift
+      summary: Redeem Gift
+      description: Redeems a gift link based on the provided request.
+      requestBody:
+        description: Gift redemption request
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RedeemGiftRequest'
+      responses:
+        '200':
+          description: Gift redeemed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RedeemGiftRespondDto'
+        '400':
+          description: Invalid input or redemption failed
+    get:
+      tags:
+        - Gift
+      summary: Redeem Gift Page
+      description: Displays the redeem gift page, optionally pre-filled with the provided token.
+      parameters:
+        - name: token
+          in: query
+          required: false
+          schema:
+            type: string
+          description: The token to pre-fill the redeem page
+      responses:
+        '200':
+          description: Redeem page displayed
+        '400':
+          description: Invalid or missing token
+
+  /image:
+    post:
+      tags:
+        - Image
+      summary: Upload Image
+      description: Uploads an image file and stores it.
+      requestBody:
+        description: The image file to upload
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The image file to upload
+      responses:
+        '200':
+          description: Image uploaded successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: The ID of the uploaded image
+                example: "image123"
+        '400':
+          description: Invalid image file
+  /image/{imageId}:
+    get:
+      tags:
+        - Image
+      summary: Retrieve Image
+      description: Retrieves an image by its ID.
+      parameters:
+        - name: imageId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the image to retrieve
+      responses:
+        '200':
+          description: Image retrieved successfully
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+                description: The binary data of the image
+        '404':
+          description: Image not found
+    delete:
+      tags:
+        - Image
+      summary: Delete Image
+      description: Deletes an image by its ID.
+      parameters:
+        - name: imageId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the image to delete
+      responses:
+        '200':
+          description: Image deleted successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Image deleted successfully"
+        '404':
+          description: Image not found
+
+
+components:
+  schemas:
+    Image:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the image
+          example: "image123"
+        contentType:
+          type: string
+          description: MIME type of the image
+          example: "image/jpeg"
+        content:
+          type: string
+          format: binary
+          description: Binary content of the image
+    GiftLinkRequest:
+      type: object
+      properties:
+        senderId:
+          type: integer
+          format: int64
+          description: ID of the gift sender
+          example: 12345
+        type:
+          type: string
+          enum: [points, item]
+          description: Type of the gift (either 'points' or 'item')
+          example: "points"
+        content:
+          type: integer
+          description: Amount or value of the gift
+          example: 100
+      required:
+        - senderId
+        - type
+        - content
+    RedeemGiftRequest:
+      type: object
+      properties:
+        token:
+          type: string
+          description: The gift token to redeem
+          example: "abcdef123456"
+        receiverId:
+          type: integer
+          format: int64
+          description: ID of the gift receiver
+          example: 67890
+      required:
+        - token
+        - receiverId
+    RedeemGiftRespondDto:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Type of the redeemed gift
+          example: "points"
+        content:
+          type: integer
+          format: int64
+          description: Amount or value of the redeemed gift
+          example: 100
+    NotificationDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        content:
+          type: string
+          example: Your voucher is about to expire
+        createdAt:
+          type: string
+          format: date-time
+          example: 2024-03-15T12:00:00Z
+        isRead:
+          type: boolean
+          example: false
+        userId:
+          type: integer
+          example: 1
+
+    GameInfoRequestDto:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Quizz
+        image:
+          type: string
+          example: id image store in mongo
+        manual:
+          type: string
+          example: Instructions for the game
+        enable:
+          type: boolean
+          example: true
+    GameInfoDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Quizz
+        image:
+          type: string
+          example: id image store in mongo
+        type:
+          type: string
+          example: QUIZZ
+        manual:
+          type: string
+          example: Instructions for the game
+        enable:
+          type: boolean
+          example: true
+    GameCampaignRequestDto:
+      type: object
+      properties:
+        campaignId:
+          type: integer
+          example: 1
+        gameInfoId:
+          type: integer
+          example: 1
+        gameId:
+          type: integer
+          example: 1
+      required:
+        - campaignId
+        - gameInfoId
+
+    GameCampaignResponseDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        campaignId:
+          type: integer
+          example: 1
+        gameInfodto:
+          $ref: '#/components/schemas/GameInfoDto'
+        gameId:
+          type: integer
+          example: 1
+
+    UserCampaignGameRequestDto:
+      type: object
+      properties:
+        userId:
+          type: integer
+          example: 1
+        campaignGameId:
+          type: integer
+          example: 1
+      required:
+        - userId
+        - campaignGameId
+
+    UserCampaignGameResponseDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        userId:
+          type: integer
+          example: 1
+        campaignGameId:
+          type: integer
+          example: 1
+        isCompleted:
+          type: boolean
+          example: false
+    PuzzleRequestDto:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Puzzle Name
+        description:
+          type: string
+          example: Puzzle Description
+        itemNum:
+          type: integer
+          example: 10
+        campaignGameId:
+          type: integer
+          example: 1
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ItemRequestDto'
+      required:
+        - name
+        - itemNum
+        - campaignGameId
+
+    PuzzleResponseDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Puzzle Name
+        description:
+          type: string
+          example: Puzzle Description
+        itemNum:
+          type: integer
+          example: 10
+        campaignGameId:
+          type: integer
+          example: 1
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ItemResponseDto'
+
+    ItemRequestDto:
+      type: object
+      properties:
+        position:
+          type: integer
+          example: 1
+        description:
+          type: string
+          example: Item Description
+        total:
+          type: integer
+          example: 100
+
+    ItemResponseDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        position:
+          type: integer
+          example: 1
+        description:
+          type: string
+          example: Item Description
+        total:
+          type: integer
+          example: 100
+        remainingNum:
+          type: integer
+          example: 50
+
+    UserItemDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        userId:
+          type: integer
+          example: 1
+        item:
+          $ref: '#/components/schemas/ItemResponseDto'
+        totalItem:
+          type: integer
+          example: 5
+    QuizzRequestDto:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Sample Quiz
+        description:
+          type: string
+          example: This is a sample quiz.
+        secondPerQuestion:
+          type: integer
+          example: 30
+        campaignGameId:
+          type: integer
+          example: 1
+        startTime:
+          type: string
+          format: date-time
+          example: 2024-03-01T12:00:00Z
+      required:
+        - name
+        - startTime
+    QuizzResponseDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Sample Quiz
+        description:
+          type: string
+          example: This is a sample quiz.
+        createdAt:
+          type: string
+          format: date-time
+          example: 2024-03-01T12:00:00Z
+        secondPerQuestion:
+          type: integer
+          example: 30
+        startTime:
+          type: string
+          format: date-time
+          example: 2024-03-01T12:00:00Z
+        campaignGameId:
+          type: integer
+          example: 1
+    QuestionRequestDto:
+      type: object
+      properties:
+        questionName:
+          type: string
+          example: What is the capital of France?
+        option1:
+          type: string
+          example: Paris
+        option2:
+          type: string
+          example: London
+        option3:
+          type: string
+          example: Berlin
+        option4:
+          type: string
+          example: Madrid
+        answer:
+          type: string
+          example: Paris
+        explaination:
+          type: string
+          example: Paris is the capital of France.
+        quizzId:
+          type: integer
+          example: 1
+      required:
+        - questionName
+        - option1
+        - option2
+        - option3
+        - option4
+        - answer
+        - quizzId
+
+    QuestionResponseDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        questionName:
+          type: string
+          example: What is the capital of France?
+        image:
+          type: string
+          example: image_url
+        option1:
+          type: string
+          example: Paris
+        option2:
+          type: string
+          example: London
+        option3:
+          type: string
+          example: Berlin
+        option4:
+          type: string
+          example: Madrid
+        answer:
+          type: string
+          example: Paris
+        explaination:
+          type: string
+          example: Paris is the capital of France.
+        quizzId:
+          type: integer
+          example: 1
+
+    UserAnswerRequestDto:
+      type: object
+      properties:
+        userId:
+          type: integer
+          example: 1
+        questionId:
+          type: integer
+          example: 1
+        answer:
+          type: string
+          example: Paris
+        answerTime:
+          type: integer
+          example: 10
+      required:
+        - userId
+        - questionId
+        - answer
+        - answerTime
+
