@@ -1,38 +1,37 @@
-import { Box, Button, Grid, Typography } from "@mui/material";
+import Button from "@mui/material/Button";
+import { Box, Grid } from "@mui/material";
+import Typography from "@mui/material/Typography";
 
 const GameCampaignForm = ({
-  onSelectGameType,
+  onNext,
   onBack,
 }: {
-  onSelectGameType: (type: "QUIZZ" | "SHAKE") => void;
+  onNext: (gameInfoId: number, gameType: "QUIZZ" | "SHAKE") => void;
   onBack: () => void;
 }) => {
+  const games = [
+    { id: 1, name: "Quizz Game", type: "QUIZZ" },
+    { id: 2, name: "Shake Game", type: "SHAKE" },
+  ];
+
   return (
     <Box sx={{ textAlign: "center", mt: 4 }}>
       <Typography variant="h6" gutterBottom>
         Select Game Type
       </Typography>
       <Grid container spacing={2} justifyContent="center">
-        <Grid item>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => onSelectGameType("QUIZZ")}
-            sx={{ minWidth: 120 }}
-          >
-            Quizz
-          </Button>
-        </Grid>
-        <Grid item>
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={() => onSelectGameType("SHAKE")}
-            sx={{ minWidth: 120 }}
-          >
-            Shake
-          </Button>
-        </Grid>
+        {games.map((game) => (
+          <Grid item key={game.id}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => onNext(game.id, game.type as "QUIZZ" | "SHAKE")}
+              sx={{ minWidth: 120 }}
+            >
+              {game.name}
+            </Button>
+          </Grid>
+        ))}
         <Grid item xs={12}>
           <Button onClick={onBack} variant="outlined" sx={{ mt: 2 }}>
             Back

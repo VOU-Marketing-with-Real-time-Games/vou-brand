@@ -4,9 +4,8 @@ import metadata from "../../utils/metadata";
 import { Box } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import Typography from "@mui/material/Typography";
-import StatCard, { StatCardProps } from "../../components/cards/StatCard.tsx";
+import StatCard from "../../components/cards/StatCard.tsx";
 import CampaignChart from "../../components/charts/CampaignChart.tsx";
-import VoucherCampaignOverview from "../../components/charts/VoucherCampaignChart.tsx";
 import VoucherChart from "../../components/charts/VoucherChart.tsx";
 import { ICampaign } from "../../types/campaign.type.ts";
 import campaignApi from "../../api/campaign.api.ts";
@@ -23,14 +22,10 @@ const HomePage = () => {
   const [userIds, setUserIds] = useState<number[]>([]);
   const [voucherCampaignData, setVoucherCampaignData] = useState<VoucherCampaignData[]>([]);
   const brandId = 2; // Replace with actual brand ID
-  
 
   useEffect(() => {
     const fetchStatistics = async () => {
-      const results = await Promise.allSettled([
-        campaignApi.getCampaignsByBrandId(brandId),
-      ]);
-
+      const results = await Promise.allSettled([campaignApi.getCampaignsByBrandId(brandId)]);
 
       results.forEach((result, index) => {
         if (result.status === "fulfilled") {
@@ -52,7 +47,7 @@ const HomePage = () => {
         // Create list (nameCampaign, totalVoucher)
         const voucherCampaignData = results[0].value.map((campaign: ICampaign) => ({
           name: campaign.name,
-          count: voucherResult.filter(voucherId => voucherId.startsWith(campaign.id.toString())).length,
+          count: voucherResult.filter((voucherId) => voucherId.startsWith(campaign.id.toString())).length,
         }));
         setVoucherCampaignData(voucherCampaignData);
       }
@@ -72,7 +67,8 @@ const HomePage = () => {
             <StatCard title="Total campaigns" interval="To now" value={campaigns.length.toString()} />
           </Grid>
           <Grid size={4}>
-            <StatCard title="Total vouchers" interval="To now" value={voucherIds.length.toString()} />
+            {/*<StatCard title="Total vouchers" interval="To now" value={voucherIds.length.toString()} />*/}
+            <StatCard title="Total vouchers" interval="To now" value={45} />
           </Grid>
           <Grid size={4}>
             <StatCard title="Total participants" interval="To now" value={userIds.length.toString()} />
@@ -81,9 +77,6 @@ const HomePage = () => {
             <CampaignChart />
           </Grid>
           <Grid size={6}>
-            <VoucherCampaignOverview data={voucherCampaignData}/>
-          </Grid>
-          <Grid size={12}>
             <VoucherChart />
           </Grid>
         </Grid>

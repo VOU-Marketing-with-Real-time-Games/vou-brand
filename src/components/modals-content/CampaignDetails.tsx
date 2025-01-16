@@ -15,7 +15,6 @@ import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
 import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
 import { format } from "date-fns";
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -68,8 +67,7 @@ const renderDate = (date: string) => {
 
 const CampaignDetails = forwardRef<HTMLDivElement, CampaignDetailsProps>(({ id, onSuccess }, ref) => {
   const [campaign, setCampaign] = useState<ICampaign | null>(null);
-  const [isRejecting, setIsRejecting] = useState(false);
-  const [note, setNote] = useState("");
+  const [isCanceling, setIsCanceling] = useState(false);
 
   useQuery({
     queryKey: ["get-campaign", id],
@@ -86,7 +84,7 @@ const CampaignDetails = forwardRef<HTMLDivElement, CampaignDetailsProps>(({ id, 
   });
 
   const updateCampaignStatus = useMutation({
-    mutationFn: (status: string) => campaignApi.updateCampaign(Number(id), { ...campaign, status, note } as ICampaign),
+    mutationFn: (status: string) => campaignApi.updateCampaign(Number(id), { ...campaign, status } as ICampaign),
     onSuccess: () => {
       toast.success("Campaign status updated successfully");
       onSuccess();
@@ -96,25 +94,16 @@ const CampaignDetails = forwardRef<HTMLDivElement, CampaignDetailsProps>(({ id, 
     },
   });
 
-  const handleApprove = () => {
-    updateCampaignStatus.mutate("APPROVED");
+  const handleCancel = () => {
+    setIsCanceling(true);
   };
 
-  const handleReject = () => {
-    setIsRejecting(true);
+  const handleConfirmCancel = () => {
+    updateCampaignStatus.mutate("CANCELED");
   };
 
-  const handleConfirmReject = () => {
-    if (note.trim() === "") {
-      toast.error("Note is required");
-      return;
-    }
-    updateCampaignStatus.mutate("REJECTED");
-  };
-
-  const handleCancelReject = () => {
-    setIsRejecting(false);
-    setNote("");
+  const handleCancelCancel = () => {
+    setIsCanceling(false);
   };
 
   return (
@@ -155,38 +144,18 @@ const CampaignDetails = forwardRef<HTMLDivElement, CampaignDetailsProps>(({ id, 
                     <TableCell sx={{ fontWeight: "bold", color: "primary" }}>Status</TableCell>
                     <TableCell>{renderStatus(campaign.status as any)}</TableCell>
                   </TableRow>
-                  {campaign.status === "REJECTED" && (
-                    <TableRow>
-                      <TableCell sx={{ fontWeight: "bold", color: "primary" }}>Note</TableCell>
-                      <TableCell>{campaign.note}</TableCell>
-                    </TableRow>
-                  )}
-                  {isRejecting && (
-                    <TableRow>
-                      <TableCell sx={{ fontWeight: "bold", color: "primary" }}>Note</TableCell>
-                      <TableCell>
-                        <TextField
-                          fullWidth
-                          required
-                          value={note}
-                          onChange={(e) => setNote(e.target.value)}
-                          placeholder="Enter rejection note"
-                        />
-                      </TableCell>
-                    </TableRow>
-                  )}
                 </TableBody>
               </Table>
             </TableContainer>
-            {campaign.status === "PENDING" && (
+            {campaign.status !== "CANCELED" && campaign.status !== "REJECTED" && campaign.status !== "COMPLETED" && (
               <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2, marginTop: 2 }}>
-                {isRejecting ? (
+                {isCanceling ? (
                   <>
                     <Button
                       variant="contained"
                       color="secondary"
                       sx={{ fontWeight: "bold", color: "whitesmoke" }}
-                      onClick={handleCancelReject}
+                      onClick={handleCancelCancel}
                     >
                       Cancel
                     </Button>
@@ -194,30 +163,20 @@ const CampaignDetails = forwardRef<HTMLDivElement, CampaignDetailsProps>(({ id, 
                       variant="contained"
                       color="error"
                       sx={{ fontWeight: "bold", color: "whitesmoke" }}
-                      onClick={handleConfirmReject}
+                      onClick={handleConfirmCancel}
                     >
                       Confirm
                     </Button>
                   </>
                 ) : (
-                  <>
-                    <Button
-                      variant="contained"
-                      color="error"
-                      sx={{ fontWeight: "bold", color: "whitesmoke" }}
-                      onClick={handleReject}
-                    >
-                      REJECT
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="success"
-                      sx={{ fontWeight: "bold", color: "whitesmoke" }}
-                      onClick={handleApprove}
-                    >
-                      APPROVE
-                    </Button>
-                  </>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    sx={{ fontWeight: "bold", color: "whitesmoke" }}
+                    onClick={handleCancel}
+                  >
+                    Cancel Campaign
+                  </Button>
                 )}
               </Box>
             )}

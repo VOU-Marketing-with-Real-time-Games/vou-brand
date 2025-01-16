@@ -1,5 +1,5 @@
-import React from 'react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import React from "react";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 interface DataPoint {
   voucher: string;
@@ -7,16 +7,16 @@ interface DataPoint {
 }
 
 const data: DataPoint[] = [
-    { voucher: 'Voucher 1', given: 5 },
-    { voucher: 'Voucher 2', given: 1 },
-    { voucher: 'Voucher 3', given: 7 },
-    { voucher: 'Voucher 4', given: 2 },
-    { voucher: 'Voucher 5', given: 9 },
-    { voucher: 'Voucher 6', given: 19 },
-    { voucher: 'Voucher 7', given: 3},
+  { voucher: "Voucher 30%", given: 5 },
+  { voucher: "Voucher 50%", given: 1 },
+  { voucher: "Voucher 25%", given: 7 },
+  { voucher: "Voucher 40%", given: 2 },
+  { voucher: "Voucher 20%", given: 9 },
+  { voucher: "Voucher 10%", given: 19 },
+  { voucher: "Voucher 15%", given: 3 },
 ];
 // Calculate min and max values for the Y axis
-const yValues = data.map(item => item.given);
+const yValues = data.map((item) => item.given);
 const minY = Math.min(...yValues);
 const maxY = Math.max(...yValues);
 
@@ -79,38 +79,23 @@ export default function VoucherChart() {
       <h2 className="text-2xl font-bold mb-6">Given Voucher Chart</h2>
       <div className="w-full h-[200px]">
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart
-            data={data}
-            margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-          >
+          <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
             <defs>
               <linearGradient id="colorRating" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#ff4d94" stopOpacity={0.8}/>
-                <stop offset="95%" stopColor="#ff4d94" stopOpacity={0.2}/>
+                <stop offset="5%" stopColor="#ff4d94" stopOpacity={0.8} />
+                <stop offset="95%" stopColor="#ff4d94" stopOpacity={0.2} />
               </linearGradient>
             </defs>
-            <CartesianGrid 
-              strokeDasharray="3 3" 
-              vertical={false} 
-              stroke="#eee"
-            />
-            <XAxis 
-              dataKey="voucher" 
-              axisLine={false}
-              tickLine={false}
-              tick={{ fill: '#666', fontSize: 12 }}
-            />
-            <YAxis 
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eee" />
+            <XAxis dataKey="voucher" axisLine={false} tickLine={false} tick={{ fill: "#666", fontSize: 12 }} />
+            <YAxis
               domain={[minY, maxY]}
               axisLine={false}
               tickLine={false}
-              tick={{ fill: '#666', fontSize: 12 }}
+              tick={{ fill: "#666", fontSize: 12 }}
               ticks={ticks}
             />
-            <Tooltip 
-              content={<CustomTooltip />}
-              cursor={false}
-            />
+            <Tooltip content={<CustomTooltip />} cursor={false} />
             <Area
               type="monotone"
               dataKey="given"
@@ -126,4 +111,3 @@ export default function VoucherChart() {
     </div>
   );
 }
-

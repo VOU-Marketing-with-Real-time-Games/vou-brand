@@ -7,6 +7,8 @@ import QuizzForm from "./steps/QuizzForm";
 import ShakeForm from "./steps/ShakeForm";
 import { styled } from "@mui/material/styles";
 import MuiCard from "@mui/material/Card";
+import gameCampaignApi from "../../api/gameCampaign.api";
+import toast from "react-hot-toast";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   position: "absolute",
@@ -32,12 +34,13 @@ const Card = styled(MuiCard)(({ theme }) => ({
     boxShadow: "hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px",
   }),
 }));
-const steps = ["Campaign Information", "Voucher", "Game"];
+const steps = ["Campaign", "Voucher", "GameCampaign", "Game"];
 
 const CreateCampaignStepper = forwardRef<HTMLDivElement>((_, ref) => {
   const [activeStep, setActiveStep] = useState(0);
-  const [gameType, setGameType] = useState<"QUIZZ" | "SHAKE" | null>(null);
   const [campaignId, setCampaignId] = useState<number | null>(null);
+  const [gameCampaignId, setGameCampaignId] = useState<number | null>(null);
+  const [gameType, setGameType] = useState<"QUIZZ" | "SHAKE" | null>(null);
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -47,20 +50,36 @@ const CreateCampaignStepper = forwardRef<HTMLDivElement>((_, ref) => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const handleGameTypeSelect = (type: "QUIZZ" | "SHAKE") => {
-    setGameType(type);
-    handleNext();
-  };
-
   const handleReset = () => {
     setActiveStep(0);
-    setGameType(null);
     setCampaignId(null);
+    setGameCampaignId(null);
+    setGameType(null);
   };
 
   const handleCampaignCreated = (id: number) => {
     setCampaignId(id);
     handleNext();
+  };
+
+  const handleVoucherCreated = () => {
+    handleNext();
+  };
+
+  const handleGameCampaignCreated = async (gameInfoId: number, type: "QUIZZ" | "SHAKE") => {
+    try {
+      const response = await gameCampaignApi.createGameCampaign({
+        campaignId: campaignId ?? 0,
+        gameInfoId,
+        gameId: 0,
+      });
+      setGameCampaignId(response.id);
+      setGameType(type);
+      handleNext();
+    } catch (error) {
+      toast.error("Failed to create game campaign");
+      console.error("Failed to create game campaign", error);
+    }
   };
 
   return (
@@ -85,15 +104,17 @@ const CreateCampaignStepper = forwardRef<HTMLDivElement>((_, ref) => {
           <Fragment>
             <Typography sx={{ mt: 2, mb: 1 }}>Step {activeStep + 1}</Typography>
             {activeStep === 0 && <CampaignForm onNext={handleCampaignCreated} />}
-            {activeStep === 1 && <VoucherForm onNext={handleNext} onBack={handleBack} campaignId={campaignId} />}
+            {activeStep === 1 && (
+              <VoucherForm onNext={handleVoucherCreated} onBack={handleBack} campaignId={campaignId} />
+            )}
             {activeStep === 2 && !gameType && (
-              <GameCampaignForm onSelectGameType={handleGameTypeSelect} onBack={handleBack} campaignId={campaignId} />
+              <GameCampaignForm onNext={handleGameCampaignCreated} onBack={handleBack} />
             )}
-            {activeStep === 2 && gameType === "QUIZZ" && (
-              <QuizzForm onNext={handleNext} onBack={handleBack} campaignId={campaignId} />
+            {activeStep === 3 && gameType === "QUIZZ" && (
+              <QuizzForm onNext={handleNext} onBack={handleBack} gameCampaignId={gameCampaignId} />
             )}
-            {activeStep === 2 && gameType === "SHAKE" && (
-              <ShakeForm onNext={handleNext} onBack={handleBack} campaignId={campaignId} />
+            {activeStep === 3 && gameType === "SHAKE" && (
+              <ShakeForm onNext={handleNext} onBack={handleBack} gameCampaignId={gameCampaignId} />
             )}
           </Fragment>
         )}
@@ -101,7 +122,6 @@ const CreateCampaignStepper = forwardRef<HTMLDivElement>((_, ref) => {
     </Card>
   );
 });
-
 CreateCampaignStepper.displayName = "CreateCampaignStepper";
 
 export default CreateCampaignStepper;

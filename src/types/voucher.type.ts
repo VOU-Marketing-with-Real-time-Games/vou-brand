@@ -4,7 +4,7 @@ export interface IVoucher {
   image: string;
   description: string;
   discount: number;
-  expirationDate: string;
+  expiredDate: string;
   createdDate: string;
   brandId: number;
 }
@@ -14,7 +14,7 @@ export interface IVoucherCreate {
   image: string;
   description: string;
   discount: number;
-  expirationDate: string;
+  expiredDate: string;
   brandId: number;
   campaignId: number;
   total: number;
@@ -24,6 +24,6 @@ export interface IVoucherUpdate {
   image?: string;
   description?: string;
   discount?: number;
-  expirationDate?: string;
+  expiredDate?: string;
   status?: "ACTIVE" | "EXPIRED" | "REDEEMED";
 }

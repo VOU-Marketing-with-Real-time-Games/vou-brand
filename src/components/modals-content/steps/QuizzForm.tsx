@@ -1,22 +1,41 @@
 import { Box, Button, TextField } from "@mui/material";
 import { useState } from "react";
+import gameCampaignApi from "../../../api/gameCampaign.api";
+import toast from "react-hot-toast";
 
-const QuizzForm = ({ onNext, onBack }: { onNext: () => void; onBack: () => void }) => {
+const QuizzForm = ({
+  onNext,
+  onBack,
+  gameCampaignId,
+}: {
+  onNext: () => void;
+  onBack: () => void;
+  gameCampaignId: number | null;
+}) => {
   const [quizzData, setQuizzData] = useState({
     name: "",
     description: "",
     secondPerQuestion: 0,
     startTime: "",
-    campaignGameId: 0,
+    campaignGameId: gameCampaignId ?? 0,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuizzData({ ...quizzData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = () => {
-    // Call API to create quizz
-    onNext();
+  const handleSubmit = async () => {
+    try {
+      await gameCampaignApi.createGameCampaign({
+        ...quizzData,
+        gameCampaignId: gameCampaignId ?? 0,
+      });
+      toast.success("Quizz created successfully");
+      onNext();
+    } catch (error) {
+      toast.error("Failed to create quizz");
+      console.error("Failed to create quizz", error);
+    }
   };
 
   return (
@@ -37,13 +56,6 @@ const QuizzForm = ({ onNext, onBack }: { onNext: () => void; onBack: () => void 
         fullWidth
       />
       <TextField name="startTime" label="Start Time" value={quizzData.startTime} onChange={handleChange} fullWidth />
-      <TextField
-        name="campaignGameId"
-        label="Campaign Game ID"
-        value={quizzData.campaignGameId}
-        onChange={handleChange}
-        fullWidth
-      />
       <Button onClick={onBack}>Back</Button>
       <Button onClick={handleSubmit}>Next</Button>
     </Box>

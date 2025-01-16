@@ -1,10 +1,13 @@
 export interface ICampaignRequestDto {
   name: string;
   image: string;
+  description: string;
   field: string;
   startDate: string;
   endDate: string;
   brandId: number;
+  status: "ACTIVE" | "INACTIVE" | "PENDING" | "APPROVED" | "REJECTED" | "COMPLETED" | "CANCELED";
+  note?: string;
 }
 
 export interface ICampaign {

@@ -78,7 +78,7 @@ export default function SideMenu() {
             {auth.fullName}
           </Typography>
           <Typography variant="body2" sx={{ color: "text.secondary" }}>
-            {auth.role}
+            BRAND
           </Typography>
           <Typography variant="caption" sx={{ color: "text.secondary" }}>
             {auth.email}

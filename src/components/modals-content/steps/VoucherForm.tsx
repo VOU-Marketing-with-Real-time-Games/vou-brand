@@ -27,7 +27,7 @@ const VoucherForm = ({
     image: string;
     description: string;
     discount: number;
-    expirationDate: Date | null;
+    expiredDate: Date | null;
     brandId: number;
     campaignId: number | null;
     total: number;
@@ -36,7 +36,7 @@ const VoucherForm = ({
     image: "",
     description: "",
     discount: 0,
-    expirationDate: null,
+    expiredDate: null,
     brandId: auth.brand.id,
     campaignId: campaignId,
     total: 0,
@@ -53,7 +53,7 @@ const VoucherForm = ({
   };
 
   const handleDateChange = (date: Date | null) => {
-    setVoucherData({ ...voucherData, expirationDate: date });
+    setVoucherData({ ...voucherData, expiredDate: date });
   };
 
   const validateData = () => {
@@ -73,7 +73,7 @@ const VoucherForm = ({
       toast.error("Discount is required");
       return false;
     }
-    if (!voucherData.expirationDate) {
+    if (!voucherData.expiredDate) {
       toast.error("Expiration Date is required");
       return false;
     }
@@ -85,15 +85,15 @@ const VoucherForm = ({
   };
 
   const handleSubmit = async () => {
-    // if (!validateData()) {
-    //   return;
-    // }
+    if (!validateData()) {
+      return;
+    }
     try {
-      // await voucherApi.createVoucher({
-      //   ...voucherData,
-      //   campaignId: voucherData.campaignId ?? 0, // Ensure campaignId is a number
-      //   expirationDate: voucherData.expirationDate?.toISOString() || "",
-      // });
+      await voucherApi.createVoucher({
+        ...voucherData,
+        campaignId: voucherData.campaignId ?? 0, // Ensure campaignId is a number
+        expiredDate: voucherData.expiredDate,
+      });
       toast.success("Voucher created successfully");
       onNext();
     } catch (error) {
@@ -147,19 +147,9 @@ const VoucherForm = ({
           <Grid item xs={12} sm={6}>
             <DatePicker
               label="Expiration Date"
-              value={voucherData.expirationDate}
+              value={voucherData.expiredDate}
               onChange={handleDateChange}
               renderInput={(params: TextFieldProps) => <TextField {...params} fullWidth />}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              name="campaignId"
-              label="Campaign ID"
-              value={voucherData.campaignId ?? ""}
-              onChange={handleChange}
-              fullWidth
-              disabled
             />
           </Grid>
           <Grid item xs={12} sm={6}>
